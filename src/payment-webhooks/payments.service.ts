@@ -20,6 +20,8 @@ export class PaymentsService {
             const invoice = await this.paymentsRepository.findInvoice(transactionManager, payment.invoice_id);
             if (!invoice) throw new BadRequestException(`Invoice not found: ${payment.invoice_id}`);
 
+            if (invoice.status === InvoiceStatus.PAID) throw new BadRequestException(`payment is already done for invoice id: ${payment.invoice_id}`);
+
             try {
                 await this.paymentsRepository.insertPaymentEvent(transactionManager, payment, invoice);
             } catch (err: any) {

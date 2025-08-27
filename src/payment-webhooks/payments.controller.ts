@@ -9,7 +9,12 @@ export class PaymentsController {
   constructor(
     private readonly paymentsService: PaymentsService,
     private readonly eventQueue: EventQueueService,
-  ) { }
+  ) {
+
+    this.eventQueue.subscribe('paymentEvent', async (paymentEvent: PaymentEventDto) => {
+      await this.paymentsService.processPayment(paymentEvent);
+    });
+  }
 
   @Post('/payments')
   async createPayment(@Body() createPayment: PaymentEventDto): Promise<PaymentEventResponse> {

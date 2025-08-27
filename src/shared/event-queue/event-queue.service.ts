@@ -9,17 +9,12 @@ interface QueuedEvent {
 }
 
 @Injectable()
-export class EventQueueService implements OnModuleInit {
+export class EventQueueService {
     private readonly logger = new Logger(EventQueueService.name);
 
     private handlers: Record<string, EventHandler[]> = {};
     private queue: QueuedEvent[] = [];
     private isProcessing = false;
-
-    onModuleInit() {
-        this.logger.log('Event queue initiated');
-        this.processQueue();
-    }
 
     /**
      * Publish an event to the queue
