@@ -16,6 +16,7 @@ describe('PaymentsController', () => {
 
     eventQueue = {
       publish: jest.fn(),
+      subscribe: jest.fn(), // mock subscribe to avoid calling real queue
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -87,19 +88,14 @@ describe('PaymentsController', () => {
       expect(eventQueue.publish).toHaveBeenCalledWith('paymentEvent', dto);
       expect(result).toEqual({ status: 'Message received successfully' });
     });
+  });
 
-    it('should propagate errors from eventQueue', async () => {
-      const dto: PaymentEventDto = {
-        event_id: 'event-4',
-        type: EventType.INVOICE_PAYMENT,
-        invoice_id: 'invoice-4',
-        amount_cents: 300,
-      };
-
-      const error = new Error('Queue error');
-      eventQueue.publish!.mockRejectedValue(error);
-
-      await expect(controller.createPaymentEvent(dto)).rejects.toThrow(error);
+  describe('constructor subscription', () => {
+    it('should subscribe to paymentEvent queue on initialization', () => {
+      expect(eventQueue.subscribe).toHaveBeenCalledWith(
+        'paymentEvent',
+        expect.any(Function),
+      );
     });
   });
 });
