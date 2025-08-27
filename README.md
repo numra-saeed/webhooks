@@ -1,29 +1,24 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is the repository URl which includes all the changes: https://github.com/numra-saeed/webhooks. I have created a Pull Request so that you can clearly see the changes and response of github action. Here is a URl of PR:. 
+If you want, feel free to merge the PR in main branch.
+
+I have used NestJS for the implementation. The project is divided into two modules: payment-webhooks and shared/event-queue. The controller & services files are in their respective modules. The validation of input field are added using class-validator library
+
+Moreover, the implementation includes two endpoints:
+
+1. To see the processing of payment event without queue:
+```bash
+  http://localhost:3000/webhooks/payments
+```
+
+2. To see the processing of payment event with event queue:
+
+```bash
+  http://localhost:3000/webhooks/payment-events
+```
+Regarding event queue, I have created a built in array to mimic the behaviour of queue (for project) otherwise in production the integration with actual queue will be a bit different.
+
 
 ## Project setup
 
@@ -50,49 +45,49 @@ $ npm run start:prod
 # unit tests
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
 # test coverage
 $ npm run test:cov
 ```
 
-## Deployment
+## Instructions
+1. For creating database locally make sure you have pgadmin4
+2. Update the database credentials in app.module.ts
+2. Run npm install and npm run build
+3. Run npm run start
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Unit Testing
+1. Unit tests are already added in the code for payment module
+2. Run npm run test to run the test cases results
+2. I also created a github action to see whether the changes are build & tested successfully.
+ You can also check there whether tests are working fine or not. 
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Manual Testing
+For manual testing you can use following two endpoints:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+1. To see behaviour without event queue
+
+ ```bash
+curl --location 'http://localhost:3000/webhooks/payments' \
+--header 'Content-Type: application/json' \
+--data '{
+    "event_id": "cccf9078-49d4-40b8-95e9-67441e91e2qq", 
+    "type": "INVOICE_PAYMENT", 
+    "invoice_id": "cccf9078-49d4-40b8-95e9-67441e91ed5d", 
+    "amount_cents": 20
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+2. To see the behaviour of event queue
 
-## Resources
+ ```bash
+curl --location 'http://localhost:3000/webhooks/payment-events' \
+--header 'Content-Type: application/json' \
+--data '{
+    "event_id": "cccf9078-49d4-40b8-95e9-67441e91e2qq", 
+    "type": "INVOICE_PAYMENT", 
+    "invoice_id": "cccf9078-49d4-40b8-95e9-67441e91ed5d", 
+    "amount_cents": 20
+}'
 
-Check out a few resources that may come in handy when working with NestJS:
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
