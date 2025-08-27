@@ -1,7 +1,6 @@
 ## Description
 
-This is the repository URl which includes all the changes: https://github.com/numra-saeed/webhooks. I have created a Pull Request so that you can clearly see the changes and response of github action. Here is a URl of PR:. 
-If you want, feel free to merge the PR in main branch.
+This is the repository URl which includes all the changes: https://github.com/numra-saeed/webhooks. I have also integrated the github actions for checking the build and tests. For exmaple the latest job run is here: https://github.com/numra-saeed/webhooks/actions/runs/17279478145/job/49044468539?pr=1. Whenever you will create a new PR all the tests and build are automatically run via github actions.
 
 I have used NestJS for the implementation. The project is divided into two modules: payment-webhooks and shared/event-queue. The controller & services files are in their respective modules. The validation of input field are added using class-validator library
 
@@ -58,8 +57,7 @@ $ npm run test:cov
 ## Unit Testing
 1. Unit tests are already added in the code for payment module
 2. Run npm run test to run the test cases results
-2. I also created a github action to see whether the changes are build & tested successfully.
- You can also check there whether tests are working fine or not. 
+2. I also created a github action to see whether the changes are build & tested successfully. 
 
 ## Manual Testing
 For manual testing you can use following two endpoints:
