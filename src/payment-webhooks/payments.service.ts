@@ -30,17 +30,18 @@ export class PaymentsService {
                 }
                 throw err;
             }
+            console.log("invoice.paidCents", invoice.paidCents);
+            console.log("invoice.paidCamount_centsents", payment.amount_cents);
             const updatedPaidCents = invoice.paidCents + payment.amount_cents;
+            console.log("updatedPaidCents", updatedPaidCents);
             const newStatus = this.calculateStatus(updatedPaidCents, invoice.totalCents);
 
-            if (newStatus !== invoice.status) {
-                await this.paymentsRepository.updateInvoice(transactionManager, invoice.id, {
-                    status: newStatus,
-                    paidCents: updatedPaidCents,
-                });
-                this.logger.log(`Invoice ${invoice.id} status updated from ${invoice.status} to ${newStatus}`);
-            }
 
+            await this.paymentsRepository.updateInvoice(transactionManager, invoice.id, {
+                status: newStatus,
+                paidCents: updatedPaidCents,
+            });
+            this.logger.log(`Invoice ${invoice.id} status updated from ${invoice.status} to ${newStatus}`);
             return { status: newStatus, invoiceId: invoice.id, updatedPaidCents };
         });
     }
