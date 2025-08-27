@@ -25,8 +25,8 @@ export class PaymentsService {
             } catch (err: any) {
                 if (err.code === '23505') { // error code for duplication key error
 
-                    this.logger.warn(`Duplicate payment event ignored: ${payment.event_id}`);
-                    throw new BadRequestException(`Event id already exist in the database : ${payment.event_id}`)
+                    this.logger.warn(`Duplicate payment event exist in database: ${payment.event_id}`);
+                    throw new BadRequestException(`Duplicate payment event exist in database: ${payment.event_id}`)
                 }
                 throw err;
             }
