@@ -20,8 +20,16 @@ export class PaymentsService {
             const invoice = await this.paymentsRepository.findInvoice(transactionManager, payment.invoice_id);
             if (!invoice) throw new BadRequestException(`Invoice not found: ${payment.invoice_id}`);
 
-            await this.paymentsRepository.insertPaymentEvent(transactionManager, payment, invoice);
+            try {
+                await this.paymentsRepository.insertPaymentEvent(transactionManager, payment, invoice);
+            } catch (err: any) {
+                if (err.code === '23505') { // error code for duplication key error
 
+                    this.logger.warn(`Duplicate payment event ignored: ${payment.event_id}`);
+                    throw new BadRequestException(`Event id already exist in the database : ${payment.event_id}`)
+                }
+                throw err;
+            }
             const updatedPaidCents = invoice.paidCents + payment.amount_cents;
             const newStatus = this.calculateStatus(updatedPaidCents, invoice.totalCents);
 
