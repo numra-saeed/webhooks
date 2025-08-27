@@ -1,15 +1,25 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { PaymentEventDto } from './dto/create-payment.dto';
+import { EventQueueService } from '../shared/event-queue/event-queue.service';
+import { PaymentEventResponse } from './dto/payment-response';
 
-@Controller('webhooks/payments')
+@Controller('webhooks')
 export class PaymentsController {
-  constructor(private readonly paymentsService: PaymentsService) { }
+  constructor(
+    private readonly paymentsService: PaymentsService,
+    private readonly eventQueue: EventQueueService,
+  ) { }
 
-  @Post()
-  async create(@Body() createPayment: CreatePaymentDto) {
-    const invoice = await this.paymentsService.processPayment(createPayment);
-    return { invoice };
+  @Post('/payments')
+  async createPayment(@Body() createPayment: PaymentEventDto): Promise<PaymentEventResponse> {
+    return this.paymentsService.processPayment(createPayment);
+  }
+
+  @Post('/payment-events')
+  async createPaymentEvent(@Body() createPayment: PaymentEventDto): Promise<{ status: string }> {
+    await this.eventQueue.publish('paymentEvent', createPayment);
+    return { status: 'Message received successfully' };
   }
 
 

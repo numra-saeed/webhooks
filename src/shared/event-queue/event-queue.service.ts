@@ -32,9 +32,7 @@ export class EventQueueService implements OnModuleInit {
         }
     }
 
-    /**
-     * Subscribe a handler to an event type
-     */
+    // Subscribe a handler to an event type
     subscribe(type: string, handler: EventHandler) {
         if (!this.handlers[type]) {
             this.handlers[type] = [];
@@ -42,17 +40,13 @@ export class EventQueueService implements OnModuleInit {
         this.handlers[type].push(handler);
     }
 
-    /**
-     * Remove a handler for an event type
-     */
+    // Remove a handler for an event type
     unsubscribe(type: string, handler: EventHandler) {
         if (!this.handlers[type]) return;
         this.handlers[type] = this.handlers[type].filter(h => h !== handler);
     }
 
-    /**
-     * Process events in the queue
-     */
+    // Process events in the queue
     private async processQueue() {
         if (this.isProcessing) return;
 
