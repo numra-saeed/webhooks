@@ -1,16 +1,20 @@
-import { IsUUID, IsInt, Min, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsPositive, IsString, IsUUID } from 'class-validator';
 
-export class CreatePaymentDto {
-    @IsUUID()
+export enum EventType {
+    INVOICE_PAYMENT = 'INVOICE_PAYMENT'
+}
+
+export class PaymentEventDto {
+    @IsString()
     event_id: string;
 
-    @IsString()
-    type: string;
+    @IsEnum(EventType, { message: 'type must be a valid EventType' })
+    type: EventType;
 
     @IsUUID()
     invoice_id: string;
 
     @IsInt()
-    @Min(1)
+    @IsPositive()
     amount_cents: number;
 }
